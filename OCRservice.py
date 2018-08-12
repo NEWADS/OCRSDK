@@ -1,6 +1,5 @@
 from aip import AipOcr
-from TencentAPI import *
-from TencentAPIMsg import *
+from OCRSDK.TencentAPIMsg import *
 
 """
 Autor: Wilson.Zhang
@@ -40,9 +39,28 @@ def GetOCRResult(**args):
         #选择腾讯API的情况：
         APP_ID = "2107641945"
         APP_KEY = "ONCdozjSNiDo1sZj"
-
-        client = TencentAPIMsg(APP_ID, APP_KEY)
-
+        filecontent = args.get("FILECONTENT")
+        if filecontent is None:
+            result = {"result": "failed! No input pic..."}
+            return result
+        else:
+            client = TencentAPIMsg(APP_ID, APP_KEY)
+            file = open(filecontent, "rb")
+            if file is None:
+                result = {"result": "failed! File content is wrong, please verify..."}
+                return result
+            file = client.get_img_base64str(filecontent)
+            Req_Dict = {"image": file}
+            #生成请求包
+            Req_Dict = client.init_req_dict(req_dict=Req_Dict)
+            response = requests.post("https://api.ai.qq.com/fcgi-bin/ocr/ocr_generalocr",
+                                   data=Req_Dict)
+            result = response.json()
+            if result["ret"] == 0:
+                result["result"] = "Success!"
+            else:
+                result["result"] = "Failed! Http Response Error"
+            return result
     else:
         result = {"result": "Oops, seems that we don't support this platform(we only support Baidu now....)"}
         return result

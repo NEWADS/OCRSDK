@@ -138,30 +138,35 @@ class TencentAPIMsg(object):
             md5text= sha.hexdigest().upper()
             #print(1)
             #字典可以在函数中改写
-            if md5text: req_dict['sign'] = md5text
+            if md5text:
+                req_dict['sign'] = md5text
             return md5text
         except Exception as e:
             return   None
 
     #生成字典
-    def init_req_dict(self, req_dict,app_id=None, app_key=None,time_stamp=None, nonce_str=None):
+    def init_req_dict(self, req_dict, app_id=None, app_key=None, time_stamp=None, nonce_str=None):
         """用MD5算法生成安全签名"""
-        if not req_dict.get('app_id'): 
-            if not app_id: app_id= self.__app_id
-            req_dict['app_id']= app_id
+        if req_dict.get('app_id') is None:
+            if app_id is None:
+                app_id = self.__app_id
+            req_dict['app_id'] = app_id
        
         #nonce_str 字典无值
-        if not req_dict.get('time_stamp'): 
-            if not time_stamp: time_stamp= self.get_time_stamp()
-            req_dict['time_stamp']= time_stamp
+        if req_dict.get('time_stamp') is None:
+            if time_stamp is None:
+                time_stamp = self.get_time_stamp()
+            req_dict['time_stamp'] = time_stamp
         
-        if not req_dict.get('nonce_str'): 
-            if not nonce_str: nonce_str= self.get_random_str()
-            req_dict['nonce_str']= nonce_str
+        if req_dict.get('nonce_str') is None:
+            if nonce_str is None:
+                nonce_str = self.get_random_str()
+            req_dict['nonce_str'] = nonce_str
         #app_key 取系统参数。
-        if not app_key: app_key= self.__app_key        
-        md5key= self.gen_dict_md5(req_dict, app_key)
-        return md5key
+        if app_key is None:
+            app_key = self.__app_key
+        self.gen_dict_md5(req_dict, app_key)
+        return req_dict
         
 
 

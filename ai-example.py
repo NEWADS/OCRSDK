@@ -24,7 +24,8 @@ def ExecTecentAPI(*arg, **kwds):
     for key in para.split(','):
         value=None
         #print (kwds)
-        if kwds.get(key): value = kwds.pop(key)
+        if kwds.get(key):
+            value = kwds.pop(key)
         if key=='image': 
             #图像获取base64
             value = tx.get_img_base64str(value)
