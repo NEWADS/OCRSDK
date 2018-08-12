@@ -1,5 +1,5 @@
 #pycharm files
 __pycache__/
-
+*.pyc
 #vscode files
 .vscode/
