@@ -18,7 +18,7 @@ def GetOCRResult(**args):
         #filecontent = args.get("FILECONTENT") This is old version
         #读取图片
         if not "CONTENT" in args:
-            result = {"result": "failed! No input pic..."}
+            result = {"result": "Failed! No input pic."}
             return result
         else:
             for content in args["CONTENT"]:
@@ -27,8 +27,10 @@ def GetOCRResult(**args):
                     try:
                         file = open(content, "rb")
                     except IOError:
-                        result = {"result": "failed! File content is wrong, please verify..."}
-                        return result
+                        result[content] = {"status": "failed, file content is wrong, please verify...",
+                                           "wordlist": [],
+                                           "wordposition": []}
+                        #return result
                     else:
                         bin = file.read()
                         #开启多余参数监测（虽然没什么用）
@@ -42,12 +44,14 @@ def GetOCRResult(**args):
                             reslist = []
                             for resdict in tmp["words_result"]:
                                 reslist.append(resdict["words"])
-                            restmp = {"status": "success", "wordlist": reslist, "wordpostion": []}
+                            restmp = {"status": "success",
+                                      "wordlist": reslist,
+                                      "wordposition": []}
                             result[content] = restmp
                         else:
                             restmp = {"status": "failed, no words are recognized.", "wordlist": [], "wordposition": []}
                             result[content] = restmp
-        result["result"] = "Done! All pictures have been scanned." #这里需要修改！！！
+        result["result"] = "Done!" #这里需要修改！！！
         return result
     elif args.get("API") is "Tencent":
         #选择腾讯API的情况：
@@ -56,7 +60,7 @@ def GetOCRResult(**args):
         client = TencentAPIMsg(APP_ID, APP_KEY)
         #filecontent = args.get("FILECONTENT")
         if not "CONTENT" in args:
-            result = {"result": "failed! No input pic..."}
+            result = {"result": "failed! No input pic."}
             return result
         else:
             for content in args["CONTENT"]:
@@ -64,8 +68,10 @@ def GetOCRResult(**args):
                     try:
                         file = open(content, "rb")
                     except IOError:
-                        result = {"result": "failed! File content is wrong, please verify..."}
-                        return result
+                        #result = {"result": "failed! File content is wrong, please verify..."}
+                        result[content]={"status": "failed, file content is wrong",
+                                         "wordlist": [],
+                                         "wordposition": []}
                     else:
                         file = client.get_img_base64str(content)
                         Req_Dict = {"image": file}
@@ -79,16 +85,21 @@ def GetOCRResult(**args):
                             #result["result"] = "Success!"
                             resdata = restmp["data"]
                             if len(resdata["item_list"]) is 0:
-                                resdict = {"status": "failed, no words are recognized.", "wordlist": [], "wordpostion": []}
+                                resdict = {"status": "failed, no words are recognized.",
+                                           "wordlist": [],
+                                           "wordpostiion": []}
                                 result[content] = resdict
                             else:
                                 for tmp in resdata["item_list"]:
                                     reslist.append(tmp["itemstring"])
-                                resdict = {"status": "success", "wordlist": reslist, "wordpostion": []}
+                                resdict = {"status": "success",
+                                           "wordlist": reslist,
+                                           "wordposition": []}
                                 result[content] = resdict
                         else:
-                            result["result"] = "Failed! Http Response Error"
-            result["result"] = "Done! All pictures have been scanned."
+                            result["result"] = "Failed! Http Response Error."
+                            return result
+            result["result"] = "Done!."
             return result
     elif args.get("API") is "AUTO":
         #让脚本选择的情况，默认优先调用百度，若百度出现超时或QPS上限，换用腾讯。
