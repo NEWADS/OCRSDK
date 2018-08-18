@@ -28,19 +28,9 @@ Documentation: http://ai.baidu.com/docs#/OCR-Python-SDK/top
 # result = client.basicGeneralUrl(url, options)
 # print(result)
 
-result = OCRservice.GetOCRResult(API="Tencent", CONTENT=["./timg.jpg",
-                                                         "./timg2.jpg",
-                                                         "./timg3.jpg",
-                                                         "./7.jpg",
-                                                         "./838.jpg",
-                                                         "./55.jpg",
-                                                         "./timg4.jpg"])
+result = OCRservice.GetOCRResult(API="Tencent", CONTENT=["./timg4.jpg",
+                                                         "./timg.jpg"])
 print(result)
-result = OCRservice.GetOCRResult(API="Baidu", CONTENT=["./timg.jpg",
-                                                       "./timg2.jpg",
-                                                       "./timg3.jpg",
-                                                       "./7.jpg",
-                                                       "./838.jpg",
-                                                       "./55.jpg",
-                                                       "./timg4.jpg"])
+result = OCRservice.GetOCRResult(API="AUTO", CONTENT=["./timg4.jpg",
+                                                       "./timg.jpg"])
 print(result)
