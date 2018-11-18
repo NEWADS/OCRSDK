@@ -1,5 +1,5 @@
 from aip import AipOcr
-from OCRSDK.TencentAPIMsg import *
+from TencentAPIMsg import *
 from PIL import Image
 
 """
